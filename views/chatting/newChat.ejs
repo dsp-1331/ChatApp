@@ -26,10 +26,10 @@
  <!-- Validation popup for the message length  -->
 <script>
   function validateMessage(event){
-    const msg= document.getElementById("msg").value();
+    const msg= document.getElementById("msg").value.trim();
     if(msg.length>50){
         event.preventDefault(); // stop form submission
-        swal.fire({
+        Swal.fire({
         icon:"error",
         title:"Message is too long and exceeds 50 characters. Please shorten it.",
         confirmButtonText:"OK"

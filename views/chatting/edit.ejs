@@ -25,7 +25,7 @@
             //pop-up to check msg length
             const msg=document.getElementById("msg").value.trim();
             if (msg.length>50){
-                swal.fire({
+                Swal.fire({
                     title:"Message Too Long!",
                     text:"Your message exceeds 50 character. Please shorten it.",
                     icon:"error",
@@ -36,7 +36,7 @@
             
 
             //Pop-up to show msg updated
-            swal.fire({
+            Swal.fire({
                 title: "Update Message?",
                 text:"Do you really want to save the changes?",
                 icon:"question",
@@ -48,7 +48,7 @@
             .then((result)=>{
                 if(result.isConfirmed){
                     form.submit();
-                    swal.fire({
+                    Swal.fire({
                         title:"Updated!",
                         text:"Your message has been updated.",
                         icon:"success"

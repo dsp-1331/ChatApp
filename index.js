@@ -80,9 +80,7 @@ app.post("/allChats",async(req,res)=>{
         console.log(error);
         res.status(400).send("Error saving chat due to validation or db issue");
     }
-
-  
-    
+   
 })
 
 //edit chat- render the edit form 
