@@ -1,0 +1,43 @@
+ <% layout ("/layouts/boilerplate"); %>
+<body>
+
+    <h1>New Chat</h1>
+
+    <form method="Post" action="/allChats" onsubmit="return validateMessage(event)">
+  <div class="mb-3">
+    <label for="From" class="form-label">Who are you? : </label>
+    <input type="text" class="form-control" id="from"  name="from" required>
+
+
+  </div>
+
+  <div class="mb-3">
+    <label for="to" class="form-label">Whom do you want to send a message to? :</label>
+    <input type="text" class="form-control" id="to" name="to" required>
+  </div>
+  <div class="mb-3 ">
+    <label  for="msg">Message:</label>
+    <textarea name="msg" id="msg" class="form-control" required></textarea>
+    
+  </div>
+  <button type="submit" class="btn btn-primary" >Send</button>
+</form>
+
+ <!-- Validation popup for the message length  -->
+<script>
+  function validateMessage(event){
+    const msg= document.getElementById("msg").value();
+    if(msg.length>50){
+        event.preventDefault(); // stop form submission
+        swal.fire({
+        icon:"error",
+        title:"Message is too long and exceeds 50 characters. Please shorten it.",
+        confirmButtonText:"OK"
+    });
+      return false;
+    }
+    
+    return true;
+  }
+</script>
+</body>

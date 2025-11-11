@@ -1,0 +1,22 @@
+body{
+    background-color: rgb(155, 200, 185);
+     font-family: "Libre Baskerville", sans-serif  !important; 
+     display: flex !important;
+     flex-direction: column;
+     min-height: 100vh;
+}
+
+.card{
+    border:none !important;
+    margin-bottom: 2rem;
+    
+}
+
+.container{
+ margin-left: auto !important;
+ margin-right: auto;
+ margin-bottom: 20rem !important;
+}
+
+
+

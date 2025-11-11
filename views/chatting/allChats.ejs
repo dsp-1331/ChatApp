@@ -1,0 +1,79 @@
+<% layout("/layouts/boilerplate") %>
+<body>
+
+
+
+      <div class="container ">
+    
+    <!-- Create new chat button --- 
+
+    <form action="/allChats/new" method="Get">
+      <button class="btn btn-primary">New Chat</button>
+    </form> -->
+
+    <br><br>
+     <!-- Display all chats data here  -->
+ <%for(let chat of chats){ %>
+    <div class="row row-cols-lg-2 row-cols-md-1 ">
+    <div class="card">
+  <div class="card-header">
+    From : <b><i> <%= chat.from %> </i> </b> &nbsp; &nbsp;
+    To: <b> <i> <%= chat.to %> </i> </b>
+    <!-- Created at time  -->
+     <p>Time: <%=chat.created_at.toString().split(" ")[4] %></p>
+     <p><%=chat.created_at.toString().split(" ").slice(0,4).join("-") %></p>
+    <!--Display  Updated at time if available -->
+   <% if(chat.updated_at && chat.created_at && Math.abs(chat.updated_at- chat.created_at) >1000 ){ %>
+      <p style="color: grey;">Last Updated: <%=chat.updated_at.toLocaleString() %></p>
+   <% } %>
+  </div>
+  <div class="card-body">
+    <p class="msg"><%=chat.msg %></p>
+   
+    <!-- Edit button  -->
+    
+    <a href="/allChats/<%=chat.id%>/edit" class="btn btn-primary" style="display: inline-block;margin-right: 10px ;" >Edit</a> 
+
+  
+       <!-- //Delete button  -->
+         <!-- To show popup confirmation before deleting  -->
+         <form action="/allChats/<%=chat.id %>?_method=DELETE" method="post" 
+          style="display: inline-block; margin: 0;"
+          onsubmit="confirmDelete(event, this)"
+           >
+            <button class="btn btn-primary">Delete</button>
+         </form>
+  </div>
+</div>
+</div>
+
+
+   <%} %>
+    
+    
+   <!-- Prettu custom popup tfor delete button -->
+    <script>
+      function confirmDelete(event,form){
+        event.preventDefault(); // prevent early delete of msg
+        Swal.fire({
+        title: "Delete this chat?",
+        text: "You won't be able to revert this later!",
+        icon: "warning",
+        showCancelButton: true,
+        cancelButtonColor: "#1e690e",
+        confirmButtonColor: "#d6303b",
+        confirmButtonText: "Yes, delete it!"
+      }).then((result) => {
+        if (result.isConfirmed) {
+          form.submit(); //proceed the msg to delete
+          Swal.fire({
+            title: "Deleted!",
+            text: "Your Message has been deleted successfully.",
+            icon: "success"
+          });
+        }
+      });
+      }
+    </script>
+</body>
+</html>
