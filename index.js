@@ -4,6 +4,8 @@ const app= express();
 const mongoose= require("mongoose");
 const mongo_url="mongodb://127.0.0.1:27017/fakeWp";
 
+// import custom error handler
+const CustomError= require("./customError");
 
 async function main() {
     await mongoose.connect(mongo_url);
@@ -42,15 +44,21 @@ app.listen(8080,()=>{
 
 app.get("/",(req,res)=>{
     console.log("Hello user welcome home root");
+    // throw new  CustomError(404, "This page is not available");
     res.send("Success");
 });
+
 
 //all chats route
 app.get("/allChats",async(req,res)=>{
     let chats=await Chat.find();
+   
     res.render("chatting/allChats.ejs",{chats});
     // console.log(chats);
 });
+
+
+
 
 //Create new Chat route- render form
 app.get("/allChats/new",(req,res)=>{
@@ -66,6 +74,7 @@ app.post("/allChats",async(req,res)=>{
         to:to, msg:msg, created_at: new Date()
     });
     
+    
     // newChat.save()
     // .then((res)=>{console.log(res);})
     // .catch((err)=>{console.log(err);});
@@ -80,7 +89,18 @@ app.post("/allChats",async(req,res)=>{
         console.log(error);
         res.status(400).send("Error saving chat due to validation or db issue");
     }
+    
    
+});
+
+app.get("/allChats/:id",async(req,res,next)=>{
+    let{id}= req.params;
+    console.log("Id: ", id);
+    let chat= await Chat.findById(id);
+    if(!chat){
+         next( new CustomError(407, "Sorry this chat might be deleted or not exists"));
+    }
+    res.render("./chatting/edit.ejs",{chat});
 })
 
 //edit chat- render the edit form 
@@ -120,4 +140,13 @@ app.delete("/allChats/:id",async(req,res)=>{
     let deleteChat=await Chat.findByIdAndDelete(id);
     res.redirect("/allChats");
     console.log("Deleted chat: ", deleteChat);
+});
+
+
+// Error handling middleware
+app.use((err,req,res,next)=>{
+    console.log(err);
+    let{status=500,msg="chat not found"}= err;
+    
+    res.status(status).send(msg);
 });
