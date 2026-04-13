@@ -2,12 +2,14 @@
  <% layout ("/layouts/boilerplate"); %>
 <body>
     
-<h1>Show Page</h1>
+<br>
 
    <div>
     <h1>Show Message for ID: <%=chat.id%></h1>
+    <br><br>
    
     <p>From:  <b><%=chat.from %></b> &nbsp;&nbsp; To:  <b> <%=chat.to %></b> </p>
+    <br>
     <form action="/allChats/<%=chat.id%>", method="GET" >
        
         <label for="msg" >Message: </label>

@@ -63,21 +63,24 @@ app.get("/allChats/new",(req,res)=>{
     res.render("./chatting/newChat.ejs");
 });
 
+function asyncWrap(fn){
+    return function(req,res,next){
+        fn(req,res,next).catch((err)=> next(err));
+    };
+}
 
 //New Show route
-app.get("/allChats/:id",async(req,res,next)=>{
+app.get("/allChats/:id",asyncWrap(async(req,res,next)=>{
     let {id}= req.params;
     let chat= await Chat.findById(id);
     if(!chat){
         next( new CustomError(404, "Chat not found")) ;
     }
-    else{
-         res.render("./chatting/show.ejs", {chat});
-    }
-
-   
     
-});
+         res.render("./chatting/show.ejs", {chat});
+    
+  
+}));
 
 
 
