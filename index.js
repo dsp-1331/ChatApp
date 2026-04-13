@@ -41,6 +41,13 @@ app.listen(8080,()=>{
     console.log("Listening on port 8080");
 });
 
+//Asynchronous function to wrap async functions
+function asyncWrap(fn){
+    return function(req,res,next){
+        fn(req,res,next).catch((err)=> next(err));
+    };
+}
+
 
 app.get("/",(req,res)=>{
     console.log("Hello user welcome home root");
@@ -50,12 +57,12 @@ app.get("/",(req,res)=>{
 
 
 //all chats route
-app.get("/allChats",async(req,res)=>{
+app.get("/allChats",asyncWrap(async(req,res)=>{
     let chats=await Chat.find();
    
     res.render("chatting/allChats.ejs",{chats});
     // console.log(chats);
-});
+}));
 
 //Create new Chat route- render form
 app.get("/allChats/new",(req,res)=>{
@@ -63,11 +70,7 @@ app.get("/allChats/new",(req,res)=>{
     res.render("./chatting/newChat.ejs");
 });
 
-function asyncWrap(fn){
-    return function(req,res,next){
-        fn(req,res,next).catch((err)=> next(err));
-    };
-}
+
 
 //New Show route
 app.get("/allChats/:id",asyncWrap(async(req,res,next)=>{
@@ -86,7 +89,7 @@ app.get("/allChats/:id",asyncWrap(async(req,res,next)=>{
 
 
 //save new chat
-app.post("/allChats",async(req,res)=>{
+app.post("/allChats",asyncWrap(async(req,res)=>{
     console.log(req.body);
     let{from,to,msg}= req.body;
     let newChat= new Chat({from: from,
@@ -100,18 +103,16 @@ app.post("/allChats",async(req,res)=>{
     // console.log("New chat is saved");
 
     //save with await
-    try{
+   
         await newChat.save();
         console.log("New chat data is successfully saved into the db");
         res.redirect("/allChats");
-    }catch(error){
-        console.log(error);
-        res.status(400).send("Error saving chat due to validation or db issue");
-        
+    
+       
     }
     
    
-});
+));
 
 //Throwing error with async function- if chat not found
 // app.get("/allChats/:id",async(req,res,next)=>{
@@ -132,15 +133,15 @@ app.post("/allChats",async(req,res)=>{
 // });
 
 //edit chat- render the edit form 
-app.get("/allChats/:id/edit",async(req,res)=>{
+app.get("/allChats/:id/edit",asyncWrap(async(req,res)=>{
     console.log(req.params);
     let {id}= req.params;
     let chat= await Chat.findById(id);
     res.render("./chatting/edit.ejs",{chat});
-});
+}));
 
 //Update chat
-app.put("/allChats/:id",async(req,res)=>{
+app.put("/allChats/:id",(async(req,res)=>{
     let {id}= req.params;
     let {msg:newMsg}= req.body;
 
@@ -148,27 +149,24 @@ app.put("/allChats/:id",async(req,res)=>{
     //     newMsg= newMsg.substring(0,50);
     // }
     
-   try{
+ 
       await Chat.findByIdAndUpdate(id,{msg:newMsg},{runValidators:true, new:true});
    
     res.redirect("/allChats");
-   }
-   catch(error){
-    console.log(error);
-    res.status(400).send("Your message is too long to send! Max 50 characters are allowed!!");
-   }
+   
+   
     
-});
+}));
 
 //delete chat
 
-app.delete("/allChats/:id",async(req,res)=>{
+app.delete("/allChats/:id",asyncWrap(async(req,res)=>{
     let {id}=req.params;
     console.log("ID: ", id);
     let deleteChat=await Chat.findByIdAndDelete(id);
     res.redirect("/allChats");
     console.log("Deleted chat: ", deleteChat);
-});
+}));
 
 
 // Error handling middleware- 
