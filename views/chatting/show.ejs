@@ -1,0 +1,29 @@
+
+ <% layout ("/layouts/boilerplate"); %>
+<body>
+    
+<h1>Show Page</h1>
+
+   <div>
+    <h1>Show Message for ID: <%=chat.id%></h1>
+   
+    <p>From:  <b><%=chat.from %></b> &nbsp;&nbsp; To:  <b> <%=chat.to %></b> </p>
+    <form action="/allChats/<%=chat.id%>", method="GET" >
+       
+        <label for="msg" >Message: </label>
+        <textarea name="msg" id="msg" class="form-control" ><%=chat.msg%></textarea> <br>
+
+        <!-- //Close button takes back to main page -->
+      
+        <button type="button" class="btn btn-primary" onclick="window.location.href='/allChats'">Close</button>
+       
+        
+    </form>
+   </div>
+   
+
+   
+    
+</body> 
+
+

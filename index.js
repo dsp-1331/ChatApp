@@ -57,14 +57,30 @@ app.get("/allChats",async(req,res)=>{
     // console.log(chats);
 });
 
-
-
-
 //Create new Chat route- render form
 app.get("/allChats/new",(req,res)=>{
     console.log("New form");
     res.render("./chatting/newChat.ejs");
 });
+
+
+//New Show route
+app.get("/allChats/:id",async(req,res,next)=>{
+    let {id}= req.params;
+    let chat= await Chat.findById(id);
+    if(!chat){
+        next( new CustomError(404, "Chat not found")) ;
+    }
+    else{
+         res.render("./chatting/show.ejs", {chat});
+    }
+
+   
+    
+});
+
+
+
 
 //save new chat
 app.post("/allChats",async(req,res)=>{
@@ -88,20 +104,29 @@ app.post("/allChats",async(req,res)=>{
     }catch(error){
         console.log(error);
         res.status(400).send("Error saving chat due to validation or db issue");
+        
     }
     
    
 });
 
-app.get("/allChats/:id",async(req,res,next)=>{
-    let{id}= req.params;
-    console.log("Id: ", id);
-    let chat= await Chat.findById(id);
-    if(!chat){
-         next( new CustomError(407, "Sorry this chat might be deleted or not exists"));
-    }
-    res.render("./chatting/edit.ejs",{chat});
-})
+//Throwing error with async function- if chat not found
+// app.get("/allChats/:id",async(req,res,next)=>{
+//     try{
+//         let{id}= req.params;
+//     // console.log("Id from router: ", id);
+//     let chat= await Chat.findById(id);
+//     if(!chat){
+//          return next(new CustomError(407, "Sorry this chat might be deleted or not exists"));
+//     }
+//     else{
+//         res.render("./chatting/edit.ejs",{chat});
+//     }
+    
+//     }catch(err){
+//         return next(err);
+//     }
+// });
 
 //edit chat- render the edit form 
 app.get("/allChats/:id/edit",async(req,res)=>{
@@ -143,9 +168,9 @@ app.delete("/allChats/:id",async(req,res)=>{
 });
 
 
-// Error handling middleware
+// Error handling middleware- 
 app.use((err,req,res,next)=>{
-    console.log(err);
+    console.log("This is error:",err);
     let{status=500,msg="chat not found"}= err;
     
     res.status(status).send(msg);

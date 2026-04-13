@@ -12,6 +12,10 @@
     </form> -->
 
     <br><br>
+
+    <!-- FIX: Sort the chats array by date (Newest First) before running the loop -->
+     <% chats.sort((a,b)=> new Date(b.created_at)- new Date(a.created_at)); %>
+     
      <!-- Display all chats data here  -->
  <%for(let chat of chats){ %>
     <div class="row row-cols-lg-2 row-cols-md-1 ">

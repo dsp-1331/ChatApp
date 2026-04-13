@@ -8,22 +8,24 @@
     <h1>Edit Message for ID: <%=chat.id%></h1>
    
     <p>From:  <b><%=chat.from %></b> &nbsp;&nbsp; To:  <b> <%=chat.to %></b> </p>
-    <form action="/allChats/<%=chat.id%>?_method=PUT", method="POST" onclick="confirmUpdate(event,this)">
+    <form id="editForm" action="/allChats/<%=chat.id%>?_method=PUT", method="POST" >
        
         <label for="msg" >Message: </label>
         <textarea name="msg" id="msg" class="form-control" ><%=chat.msg%></textarea> <br>
         
-        <button class="btn btn-primary">Edit</button>
+        <button type="button" onclick="confirmUpdate(event)"  class="btn btn-primary">Edit</button>
     </form>
    </div>
     
 
    <!-- Fancy popup with sweetalert2  -->
     <script>
-        function confirmUpdate(event,form){
-            event.preventDefault();
+        function confirmUpdate(event){
+            event.preventDefault();  // stops default button behaviour
             //pop-up to check msg length
             const msg=document.getElementById("msg").value.trim();
+            const form= document.getElementById("editForm");
+
             if (msg.length>50){
                 Swal.fire({
                     title:"Message Too Long!",
@@ -31,7 +33,7 @@
                     icon:"error",
                     confirmButtonColor: "#3085d6",
             });
-            return 
+            return; //stops execution
             }
             
 
@@ -47,7 +49,7 @@
             })
             .then((result)=>{
                 if(result.isConfirmed){
-                    form.submit();
+                    form.submit(); // submit the form 
                     Swal.fire({
                         title:"Updated!",
                         text:"Your message has been updated.",
